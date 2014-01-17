@@ -1,14 +1,14 @@
 
 function ajaxJsonArray() {
-    var arrayLength = localDataPointsY.length;
+    var arrayLength = GroupA.length;
     var tempArray = new Array();
     for (x = 0; x <= arrayLength; x++) {
-        tempArray.push({ DataPointY: localDataPointsY[x], DataPointTypeID: localDataPointsType[x], DataPointX: localDataPointsX[x], DataPointValue: localDataPointsValue[x] });
+        tempArray.push({ GroupA: itemGroupA[x], GroupB: itemGroupB[x] });
     }
-    var theData = { PatientID: patient, FacilityID: facility, DataPointViewModels: tempArray };
+    var theData = { ListObject: tempArray };
     $.ajax({
         type: "POST",
-        url: "home/uploadAnnotations",
+        url: "home/upload",
         traditional: true,
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(theData),
