@@ -1,3 +1,6 @@
+// This is the worker that receives the files as base64 strings
+// and uploads them via xmlhttprequest().
+
 console.log("[worker] uploadWorker.js starting");
 
 var files = new Array();
@@ -6,6 +9,7 @@ var documentCount = new Array();
 var fileName = new Array();
 var docID = 0;
 
+/* FormData() Polyfill */
 (function () {
     var debug = true;
     if (debug === true) {
@@ -79,6 +83,7 @@ var docID = 0;
         };
     };
 })();
+/* End FormData() Polyfill */
 
 onmessage = function (e) {
     files.push(e.data.file);
@@ -119,7 +124,7 @@ function uploadFiles() {
                     break;
             }
         }
-        xhr.open('POST', '/Home/Upload', true); 
+        xhr.open('POST', '/path/to/upload', true); 
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.onreadystatechange = stateChangeMonitor;
         try {

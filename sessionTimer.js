@@ -1,4 +1,13 @@
-// Below is sample code to include to create an instance of the timer object on your page
+// sessionTimer.js
+// Javascript file to force a webserver to keep a session over; 
+// also redirects to another action (via headers) at any given
+// period of inactiity.
+//
+// Last edited 2014-24-3 by @code4coffee
+
+// Below is sample code to include to create an instance of the timer 
+// object on your page
+
 $(document).ready(function ()
 {
 	document.ourTimer = new timer(60, 1200);
@@ -12,7 +21,7 @@ $(document).ready(function ()
 // end sample
 
 
-// actual object
+// This is our class
 var timer = function (frequencyToPingInSeconds, endTimeInSeconds, pathToPing, inactiveRedirectPath)
 {
 	var frequencyToPing = frequencyToPingInSeconds * 1000;

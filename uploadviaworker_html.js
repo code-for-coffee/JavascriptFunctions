@@ -1,14 +1,18 @@
+// Uploading files via worker
+// This is the code that'd be used to send files from the DOM to the worker
+
+
 var formdata = new FormData();                          // our FormData() object
 var fileInput = document.getElementById('fileInput');   // our input form
 
-worker = new Worker("../content/themes/base/js/uploadWorker.js");
-    worker.onmessage = function(e)  {
-        console.log(e.data);
-            }
-        } else {
-            alert("Critical server error. Details: " + e.data);
+worker = new Worker("uploadWorker.js");
+worker.onmessage = function(e)  {
+    console.log(e.data);
         }
+    } else {
+        console.log("[worker] Critical error. Details: " + e.data);
     }
+}
 
 try {
     var newReader = new FileReader();
@@ -18,6 +22,6 @@ try {
     }
     newReader.readAsDataURL(fileInput.files[i]);
 } catch (e) {
-    console.log("Error: Could not post file to worker.");
+    console.log("[worker] Error: Could not post file to worker.");
     console.log(e);
 }
