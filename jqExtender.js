@@ -12,37 +12,63 @@
 // james@codeforcoffee.org
 // Released under MIT license. Go wild.
 
-function jQExtender(selector) {
-	this.hideSelector = function(selector) {
-	$(selector).css({ "display": "none",
-			"visibility": "hidden" });
+function jQExtender()
+{
+	this.hideSelector = function (selector)
+	{
+		$(selector).css({
+			"display": "none",
+			"visibility": "hidden"
+		});
 	}
-	this.showSelector = function(selector) {
-	$(selector).css({ "display": "inherit",
-		"visibility": "visible" });
+	this.showSelector = function (selector)
+	{
+		$(selector).css({
+			"display": "inherit",
+			"visibility": "visible"
+		});
 	}
-	
-	this.showSelectorsParent = function(selector) {
-	$(selector).parent().css({ "display": "inherit",
-		"visibility": "visible" });
+
+	this.showSelectorsParent = function (selector)
+	{
+		$(selector).parent().css({
+			"display": "inherit",
+			"visibility": "visible"
+		});
 	}
-	this.checkAndSetCookie = function(cookieName, cookieText, timeLength) {
-	if ($.cookie(cookieName) != cookieText) {
-			s$.cookie(cookieName, cookieText, { expires: timeLength }); 
+	this.checkAndSetCookie = function (cookieName, cookieText, timeLength)
+	{
+		if ($.cookie(cookieName) != cookieText) {
+			s$.cookie(cookieName, cookieText, { expires: timeLength });
 		}
 	}
-	this.updateSelectList = function(objToDependOn, objToUpdate, controller, ajaxVariable, dataReceived) {
-    var ajaxValue = $(objToDependOn).val();
-	    $.ajax({
-	        url: controller + "?" + ajaxVariable + "=" + ajaxValue,
-	        type: "POST",
-	        data: ajaxValue,
-	        success: function (data) {
-	            $(objToUpdate).empty();
-	            $.each(data, function (index, dataReceived) {
-	                $(objToUpdate).append("<option value='" + dataReceived.Value + "'>" + dataReceived.Text + "</option>");
-	            })
-	        }
-	    });
+	this.updateSelectList = function (valueToSend, objToUpdate, controller, ajaxVariable, dataReceived)
+	{
+		$.ajax({
+			url: controller + "?" + ajaxVariable + "=" + ajaxValue,
+			type: "POST",
+			data: valueToSend,
+			success: function (data)
+			{
+				$(objToUpdate).empty();
+				$.each(data, function (index, dataReceived)
+				{
+					$(objToUpdate).append("<option value='" + dataReceived.Value + "'>" + dataReceived.Text + "</option>");
+				})
+			}
+		});
+	}
+	this.ajaxPost = function (valueToSend, objToUpdate, controller, ajaxVariable, dataReceived, successFunction)
+	{
+		$.ajax({
+			url: controller + "?" + ajaxVariable + "=" + ajaxValue,
+			type: "POST",
+			data: ajaxValue,
+			success: function (data)
+			{
+				console.log("[ajax] Success");
+				successFunction();
+			}
+		});
 	}
 }
