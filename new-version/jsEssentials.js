@@ -8,6 +8,17 @@
 /* 	-----------------------------------------------------------
 */
 
+//	Environment
+//
+// 	array.last();
+// 	Adds an array.last(); function
+if (!Array.prototype.last) {
+    Array.prototype.last = function() {
+        return this[this.length - 1];
+    };
+};
+
+// 	namespace jsEssentials
 function jsEssentials() {
     //	sessionHandler
     //	Summary: Makes a calculated post to non CORS webserver to check for 
@@ -59,5 +70,28 @@ function jsEssentials() {
             window.location.replace(redirectPath);
         }
     }
-
+    // postJSON	method
+    // Summary: Posts JSON object to specified URI and returns success/error methods.
+    // 		Helpful with Closures.
+    // @jsonObject (object)		- JSON object to send to server
+    // @serverURI (string)		- Server URI to POST JSON to
+    // @successMethod			- method to call upon success
+    // @errorMethod				- method to call upon error
+    // Usage:
+    // var y = new jsEssentials.postJSON(myObject, "../path/to/server", thisWorked, thisFailed);
+    var postJSON = function(jsonObject, serverURI, successMethod, errorMethod) {
+        $.ajax({
+            type: "POST",
+            url: serverURI,
+            traditional: true,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(jsonObject),
+            success: function(data) {
+                successMethod();
+            },
+            error: function(err) {
+                errorMethod();
+            }
+        });
+    }
 }
