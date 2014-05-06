@@ -1,7 +1,7 @@
 /* 	jsEssentials - 
 	Commonly used methods, so I turned them into a library.
 	james@codeforcoffee.org
-	Last updated: 4/29/14
+	Last updated: 5/6/14
 	Released under the MIT license. Have fun.
 
 	Visual Studio 2013 users: reference this file after jQuery.
@@ -93,5 +93,96 @@ function jsEssentials() {
                 errorMethod();
             }
         });
+    }
+
+    //  uploader
+    //  Summary: Converts file list into base64 strings and uploads sync via webworker
+    //      This keeps the UI thread from being bogged down.
+    //  @inputElement (string)    - Selector (file input)
+    //  @remoteServerURI (string)    - path to upload to
+    //  @pathToWebWorker (string)    - path to webworker
+    //  --------------------------------------------------------------------------------------------
+    var uploader = function (inputElement, remoteServerURI, pathToWebWorker) {
+
+        if (inputElement == null || inputElement === "") {
+            throw new Error("jsEssentials Uploader: Invalid inputElementByID");
+        }
+        if (remoteServerURI == null || remoteServerURI === "") {
+            throw new Error("jsEssentials Uploader: Invalid remoteServerURI");
+        }
+        if (!window.FileReader) {
+            throw new Error("jsEssentials Uploader: Your browser does not support the FileReader object.");
+        }
+        if (!window.Worker) {
+            throw new Error("jsEssentials Uploader: Your browser does not support the Web Worker object.");
+        }
+
+        this.fileCount = null;
+        var fileCount = this.fileCount;
+        this.files = [];
+        var files = this.files;
+        this.progressStatus = null;
+        this.progressPercentage = null;
+        this.filesToSendToWorker = {
+            Content: null,
+            Count: null,
+            Server: remoteServerURI
+        };
+        var filesToSendToWorker = this.filesToSendToWorker;
+
+        var w = new Worker(pathToWebWorker);
+        var i = document.querySelector(inputElement);
+        var p = document.querySelector(progressElement);
+
+        w.onmessage = function (event) {
+            console.log(event.data);
+            if (event.data == 200) {
+                // positive
+            } else {
+                //negative
+            }
+        }
+        w.onerror = function (error) {
+            throw new Error("jsEssentials Uploader: " + error);
+        }
+
+        this.initialize = function () {
+            // return length
+            fileCount = i.files.length;
+            if (fileCount < 1) {
+                throw new Error("jsEssentials Uploader: No files selected.");
+            }
+        };
+
+        this.encodeFiles = function () {
+            this.initialize();
+            // read files as base64 and push into files[]
+            for (var c = 0; c < i.files.length; c++) {
+                // we have to create a new instance of the FileReader each time to keep this real-time
+                var r = new FileReader();
+                r.onload = function (event) {
+                    try {
+                        //console.log(event.target.result);
+                        files.push(event.target.result);
+                    } catch (ex) {
+                        throw new Error("jsEssentials Uploader: " + ex);
+                    }
+                }
+                var temp = i.files[c];
+                r.readAsDataURL(temp);
+            }
+        };
+
+        this.startUpload = function() {
+            this.encodeFiles();
+            //console.log(files);
+            filesToSendToWorker.Content = files;
+            filesToSendToWorker.Count = fileCount;
+            try {
+                w.postMessage(filesToSendToWorker);
+            } catch (e) {
+                throw new Error("jsEssentials Uploader: " + e);
+            }
+        }
     }
 }
